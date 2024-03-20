@@ -1,0 +1,67 @@
+SO Git 
+Maszyna wirtualna:
+git config --global user.name "Imię Nazwisko"
+git config --global user.email "imie.nazwisko@virtual.com"
+
+Maszyna hosta:
+git config --global user.name "Imię Nazwisko"
+git config --global user.email "imie.nazwisko@host.com"
+
+2a
+— wchodzimy do repos
+— klonujemy do gita
+$ git clone sziezka do test_repo1
+— dodanie niepustego pliku
+echo "Hello, world!" > example.txt
+— zatwierdzenie 
+git add example.txt
+git commit -m “Nowy plik example.txt"
+—wysylanie
+git push origin master
+
+2b
+mkdir local_repo2
+echo "Hello, world!" > example1.txt
+git add example.txt
+git commit -m “Nowy plik example1.txt"
+git remote add origin <URL_вашого_репозиторію>
+git push -u origin master
+
+3
+cd ~
+mkdir repos
+cd repos
+mkdir project1.git
+cd project1.git
+git init  --bare --shared
+
+—klonowanie
+git clone ssh://<login>@adres.ip.maszyny.wirtualnej:22/home/<login>/repos/project1.git
+—
+cd project1
+echo “Yuliia Kuliievych” > data.txt
+git add data.txt
+git commit -m "Dodano plik data.txt"
+git push origin master
+
+—
+echo "IP адреса" >> data.txt
+git add data.txt
+git commit -m "Dodano IP адресу хоста до data.txt"
+git push origin master
+
+— 
+git checkout -b feature1
+echo "email@domain.com" > data1.txt
+git add data1.txt
+git commit -m "Додано email в data1.txt"
+
+—
+git checkout master
+git merge feature1
+git push origin master
+
+—
+git remote add origin <URL_вашого_репозиторію>
+git push -u origin master
+
