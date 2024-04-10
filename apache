@@ -1,0 +1,35 @@
+token git
+ghp_m14TTM2Hcn4eJ4XInI0wXp71BpkPZN1SDWbT
+wierzba
+U4j8h9c6k1
+
+
+ssh -i ~/.ssh/id_rsa.pem epi2023@20.224.67.199
+
+Publiczny adres IP: 20.224.67.199
+
+
+nne informacje
+Używasz podsystemu Linux, takiego jak WSL lub Ubuntu w terminalu?
+Skopiuj ścieżkę klucza prywatnego do podsystemu Linux i upewnij się, że ma on prawidłowy dostęp tylko do odczytu.
+Przenieś klucz prywatny do podsystemu Linux. Użyj trybu chmod, aby przypisać dostęp tylko do odczytu, a następnie SSH.
+mv /mnt/c/<your-private-key> ~/.ssh/
+
+chmod 400 ~/.ssh/<your-private-key>
+
+ssh -i ~/.ssh/<your-private-key> epi2023@20.224.67.199
+
+
+Password2023
+
+
+http://20.224.67.199/
+
+http://20.224.67.199/~epi2023/
+
+http://20.224.67.199/~epi2023/projekt/
+
+http://20.224.67.199/~epi2023/projekt/.git
+
+https://portal.azure.com/#@o365groups.uj.edu.pl/resource/subscriptions/df32bd25-9550-4956-94f6-eb2ed81ca2f0/resourcegroups/testUbuntu/providers/Microsoft.Compute/virtualMachines/SO2Ubuntu/overview
+
