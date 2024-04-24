@@ -87,3 +87,10 @@ Warunki powodzenia:
 
 1. zalogować się pod adresem http://adres_maszyny_wirtualnej/~user/phpBB3 jako użytkownik uprzywilejowany i utworzyć nowe forum
 2. zalogować się jako użytkownik zwykły i dodać nowego posta w utworzonym forum
+
+
+
+http://20.224.67.199/~user/phpBB3/
+
+				admin
+				admin1
