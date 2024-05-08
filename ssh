@@ -1,0 +1,88 @@
+Zabezpieczenie protokołu SSH:
+Generowanie pary kluczy RSA:
+Na maszynie hosta wykonaj polecenie:
+
+  ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa
+Podczas generowania kluczy zostaniesz poproszony o podanie hasła. Wpisz "rsarsa" lub wybierz swoje hasło.
+Instalacja klucza publicznego na maszynie wirtualnej:
+Skopiuj klucz publiczny na maszynę wirtualną używając polecenia:
+
+  ssh-copy-id -i ~/.ssh/id_rsa.pub user@host
+Zastąp "user" swoim nazwą użytkownika na maszynie wirtualnej, a "host" adresem IP lub nazwą hosta.
+Zablokowanie innych metod logowania:
+Na maszynie wirtualnej edytuj plik konfiguracyjny SSH:
+
+  sudo nano /etc/ssh/sshd_config
+Znajdź linijkę PasswordAuthentication i zmień ją na no.
+Zapisz zmiany i zrestartuj usługę SSH:
+  sudo systemctl restart ssh
+Dodanie użytkownika user1 z hasłem:
+Na maszynie wirtualnej wykonaj:
+
+  sudo adduser user1
+  sudo passwd user1
+Zabezpieczenie połączenia HTTPS:
+Logowanie się na maszynę wirtualną:
+Na maszynie fizycznej użyj klienta SSH, na przykład:
+
+  ssh user@host
+Włączenie obsługi SSL na serwerze WWW:
+Upewnij się, że Apache jest zainstalowany i uruchomiony:
+
+  sudo systemctl status apache2
+Jeśli nie jest uruchomiony, uruchom go:
+
+sudo systemctl start apache2
+Włącz obsługę modułu SSL:
+
+  sudo a2enmod ssl
+Zrestartuj serwer Apache:
+Copy code
+  sudo systemctl restart apache2
+Generowanie klucza szyfrującego dla serwera WWW:
+Wygeneruj klucz prywatny serwera zabezpieczony hasłem:
+  csharp
+Copy code
+  openssl genrsa -aes256 -out server.key 2048
+Generowanie żądania certyfikatu (CSR):
+Wygeneruj żądanie certyfikatu (CSR) na podstawie klucza prywatnego:
+  vbnet
+
+  openssl req -new -key server.key -out server.csr
+Podczas generowania zostaniesz poproszony o podanie informacji, w tym danych kontaktowych.
+Wystawienie certyfikatu autentyczności:
+
+Wystaw certyfikat autentyczności na podstawie żądania certyfikatu (CSR).
+Wystawienie certyfikatu autentyczności:
+Wystawienie certyfikatu autentyczności (Certificate Authority - CA) polega na podpisaniu żądania certyfikatu (CSR) przy użyciu klucza prywatnego CA. Oto kroki do wykonania:
+
+Wygenerowanie klucza CA (jeśli jeszcze nie masz):
+Jeśli jeszcze nie masz klucza CA, możesz go wygenerować poleceniem:
+csharp
+Copy code
+openssl genrsa -out ca.key 2048
+Wygenerowanie certyfikatu CA:
+Następnie wygeneruj certyfikat CA na podstawie klucza prywatnego:
+vbnet
+Copy code
+openssl req -new -x509 -days 365 -key ca.key -out ca.crt
+Podczas generowania certyfikatu zostaniesz poproszony o podanie informacji o CA, takich jak nazwa organizacji, lokalizacja, itp.
+Podpisanie żądania certyfikatu (CSR) przez CA:
+Teraz możesz podpisać żądanie certyfikatu serwera przy użyciu klucza prywatnego CA i certyfikatu CA:
+objectivec
+Copy code
+openssl x509 -req -days 365 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+Instalacja klucza i certyfikatu na serwerze WWW:
+Po wygenerowaniu klucza i certyfikatu, musisz je zainstalować na serwerze WWW, na przykład Apache, i skonfigurować serwer tak, aby korzystał z tych kluczy i certyfikatu. Oto jak to zrobić:
+
+Zainstalowanie klucza i certyfikatu:
+Skopiuj wygenerowany klucz (server.key) i certyfikat (server.crt) do odpowiednich katalogów na serwerze WWW. Najczęściej katalogi te to /etc/ssl/private/ dla klucza i /etc/ssl/certs/ dla certyfikatu.
+Konfiguracja serwera Apache:
+Otwórz plik konfiguracyjny serwera Apache, np. /etc/apache2/sites-available/default-ssl.conf.
+Znajdź sekcję konfiguracji SSL i podmień ścieżki do klucza i certyfikatu na właściwe:
+
+SSLCertificateFile /etc/ssl/certs/server.crt
+SSLCertificateKeyFile /etc/ssl/private/server.key
+Zapisz plik i zrestartuj serwer Apache:
+Copy code
+sudo systemctl restart apache2
