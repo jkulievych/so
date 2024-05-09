@@ -86,3 +86,19 @@ SSLCertificateKeyFile /etc/ssl/private/server.key
 Zapisz plik i zrestartuj serwer Apache:
 Copy code
 sudo systemctl restart apache2
+
+
+The key fingerprint is:
+SHA256:ZLfEvBcSWmUTdOE33xh93hcNn7wYBHQr6hdcvpVWcCQ student@lab
+The key's randomart image is:
++---[RSA 2048]----+
+|          +=B+Eoo|
+|         = oo+oBo|
+|        + *..+o=B|
+|       o oo++.o=@|
+|        S.oo.o.=*|
+|        .  .. + .|
+|         . . .   |
+|          .      |
+|                 |
++----[SHA256]-----+
