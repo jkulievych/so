@@ -1,0 +1,106 @@
+ssh -i ~/.ssh/id_rsa.pem epi2023@20.56.0.44
+https://20.56.0.44/
+
+
+1. Instalacja iptables
+Jeśli iptables nie jest zainstalowane, zainstaluj je:
+
+bash
+Копіювати код
+sudo apt update
+sudo apt install iptables
+2. Umożliwienie ruchu z interfejsu loopback
+Dodaj reguły umożliwiające ruch na interfejsie loopback:
+
+bash
+Копіювати код
+sudo iptables -A INPUT -i lo -j ACCEPT
+sudo iptables -A OUTPUT -o lo -j ACCEPT
+3. Umożliwienie ruchu dla zestawionych połączeń
+Dodaj reguły umożliwiające ruch dla istniejących połączeń:
+
+bash
+Копіювати код
+sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+4. Logowanie zablokowanych pakietów
+Dodaj reguły logujące zablokowane pakiety:
+
+bash
+Копіювати код
+sudo iptables -A INPUT -j LOG --log-prefix "IPTables-INPUT-Dropped: " --log-level 4
+sudo iptables -A OUTPUT -j LOG --log-prefix "IPTables-OUTPUT-Dropped: " --log-level 4
+5. Zablokowanie ruchu przychodzącego TCP z wyjątkiem SSH z hosta
+Załóżmy, że adres IP hosta to HOST_IP. Zablokuj cały ruch przychodzący TCP oprócz portu 22 dla hosta:
+
+bash
+Копіювати код
+sudo iptables -A INPUT -p tcp --dport 22 -s HOST_IP -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+6. Zablokowanie ruchu wychodzącego TCP na port 80 z wyjątkiem localhost
+Zablokuj ruch wychodzący TCP na port 80 z wyjątkiem ruchu do localhost:
+
+bash
+Копіювати код
+sudo iptables -A OUTPUT -p tcp --dport 80 -d 127.0.0.1 -j ACCEPT
+sudo iptables -A OUTPUT -p tcp --dport 80 -j DROP
+7. Konfiguracja tunelowania SSH
+Zaloguj się z maszyny hosta na maszynę wirtualną, forwardując port 80 na port 8080 hosta. Jeśli używasz PuTTY na Windowsie:
+
+Otwórz PuTTY i przejdź do sekcji "Connection" -> "SSH" -> "Tunnels".
+W polu "Source port" wpisz 8080.
+W polu "Destination" wpisz localhost:80.
+Kliknij "Add", a następnie połącz się z maszyną wirtualną jak zwykle.
+8. Zapisywanie reguł iptables
+Aby reguły iptables były trwałe po restarcie systemu, zapisz je:
+
+Na Ubuntu możesz użyć iptables-persistent:
+
+bash
+Копіювати код
+sudo apt install iptables-persistent
+sudo netfilter-persistent save
+Testowanie warunków powodzenia
+Niemożność zalogowania się przez SSH z innego komputera niż host:
+
+Spróbuj zalogować się na maszynę wirtualną z innego komputera niż host. Powinno się to nie udać.
+Niemożność otwarcia strony WWW pod adresem maszyny wirtualnej (również z hosta):
+
+Spróbuj otworzyć stronę WWW maszyny wirtualnej bez tunelowania. Powinno się to nie udać.
+Możliwość otwarcia strony WWW maszyny wirtualnej na porcie 8080 hosta:
+
+Otwórz przeglądarkę na hoście i wpisz http://localhost:8080. Powinieneś zobaczyć stronę WWW maszyny wirtualnej.
+Niemożność otwarcia na maszynie wirtualnej stron WWW z wyjątkiem strony maszyny wirtualnej:
+
+Spróbuj otworzyć stronę WWW spoza maszyny wirtualnej z maszyny wirtualnej. Powinno się to nie udać.
+Spróbuj otworzyć lokalną stronę WWW na maszynie wirtualnej (np. http://localhost). Powinno się to udać.
+Zawartość logu wskazująca na wszystkie zablokowane próby dostępu:
+
+Sprawdź logi systemowe, aby zobaczyć zablokowane próby dostępu:
+bash
+Копіювати код
+sudo tail -f /var/log/syslog
+Przykładowe reguły iptables do skopiowania
+bash
+Копіювати код
+sudo iptables -A INPUT -i lo -j ACCEPT
+sudo iptables -A OUTPUT -o lo -j ACCEPT
+
+sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+sudo iptables -A INPUT -j LOG --log-prefix "IPTables-INPUT-Dropped: " --log-level 4
+sudo iptables -A OUTPUT -j LOG --log-prefix "IPTables-OUTPUT-Dropped: " --log-level 4
+
+sudo iptables -A INPUT -p tcp --dport 22 -s HOST_IP -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+
+sudo iptables -A OUTPUT -p tcp --dport 80 -d 127.0.0.1 -j ACCEPT
+sudo iptables -A OUTPUT -p tcp --dport 80 -j DROP
+Zastąp HOST_IP rzeczywistym adresem IP twojego hosta. Po zastosowaniu powyższych reguł i wykonaniu testów, Twoja maszyna wirtualna powinna być odpowiednio zabezpieczona.
+
+
+
+
+
+
